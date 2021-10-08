@@ -45,7 +45,7 @@ def save_ip_addr(json_data):
             time.sleep(RESTRICTION_TIME)  # API restrictions
             counter = 0
             payload = []
-    return res_list
+    return json.dumps(res_list)
 
 
 def load_ip_addr():
@@ -104,13 +104,17 @@ if __name__ == '__main__':
     args = args.date
 
     json_dict = read_json_log.get_data(args)
+    dict_count = len(json_dict)
+    _, date_amount = read_json_log.group_dates(json_dict)
+    _, logtype_amount = read_json_log.group_by_field(json_dict, 'logtype')
+
     json_dict = filter_by_logtypes([3000, 2000, 4002, 3001], json_dict)
 
     ip_addr_data, unique_ip_addr_amount = read_json_log.group_by_field(json_dict, 'src_host')
     json_ip_addr = save_ip_addr(ip_addr_data)
 
     file = open(f'../ip_addr/ip_addr_info.json', 'w')
-    file.write(json.dumps(json_ip_addr))
+    file.write(json_ip_addr)
     file.close()
 
     print('IP address file saved')
