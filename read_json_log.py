@@ -1,18 +1,19 @@
 import argparse
 import json
-from datetime import datetime
 import logtype
 import ip_addr
+from datetime import datetime
 
-FILEPATH = "/honeypot/canary_raw/"
-CONVERTED_PATH = "/honeypot/canary_logs/"
+FILEPATH = "/home/sr/canary_raw/"
+CONVERTED_PATH = "/home/sr/logs/"
 
 
 def get_data(date):
     file = open(CONVERTED_PATH + date + '.json')
     json_data = json.load(file)
     json_data = json_data['logs']
-    json_data = add_timestamps(json_data)
+    #TODO: See if timestamping is needed since data was moved from influxdb to json format
+    # json_data = add_timestamps(json_data)
     file.close()
     return json_data
 
@@ -104,6 +105,7 @@ if __name__ == '__main__':
     print_bar()
     ip_addr_json = ip_addr.load_ip_addr()
     ip_addr_top_country, top_list = ip_addr.get_top_countries(ip_addr_json)
+    top_list = reversed(top_list)
     print("Top 10 countries that have made contact to the honeypot:")
     print_bar()
     ip_addr.display_top10(ip_addr_top_country, top_list)
